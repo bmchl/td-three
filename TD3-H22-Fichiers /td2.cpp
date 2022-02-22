@@ -1,4 +1,4 @@
-﻿//[
+//[
 // Pour enlever les solutions des .cpp: remplacer "//\[[^\n]*\n.*?//\][^\r\n]*[\r]*\n[\t]*" par rien, en mode regex avec ". matches new line" (dans Notepad++), dans tous les .cpp.
 //]
 #pragma region "Includes"//{
