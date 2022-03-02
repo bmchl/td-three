@@ -22,7 +22,7 @@ CXXFLAGS=-ansi \
 LDFLAGS=
 IDIR=include
 
-SRCS=td2.cpp bibliotheque_cours.cpp verification_allocation.cpp
+SRCS=code.cpp bibliotheque_cours.cpp verification_allocation.cpp
 DEPS=bibliotheque_cours.hpp structures.hpp verification_allocation.hpp
 OBJS=$(subst .cpp,.o,$(SRCS))
 # EXEC=Debug/td2
