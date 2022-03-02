@@ -4,7 +4,9 @@
 #include <string>
 #include <cassert>
 #include "gsl/span"
+#include <memory>
 using gsl::span;
+using namespace std;
 
 struct Film; struct Acteur; // Permet d'utiliser les types alors qu'ils seront défini après.
 
@@ -16,7 +18,7 @@ public:
 	~ListeFilms();
 	void ajouterFilm(Film* film);
 	void enleverFilm(const Film* film);
-	Acteur* trouverActeur(const std::string& nomActeur) const;
+	shared_ptr<Acteur> trouverActeur(const std::string& nomActeur) const;
 	span<Film*> enSpan() const;
 	int size() const { return nElements; }
 
@@ -29,8 +31,35 @@ private:
 };
 
 struct ListeActeurs {
-	int capacite, nElements;
-	Acteur** elements; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
+public:
+	ListeActeurs() {};
+	ListeActeurs(int capacite, int nElements):capacite_(capacite),nElements_(nElements)
+	{
+		elements_ = make_unique<shared_ptr<Acteur>[]>(capacite);
+	}
+	int lireCapacite()
+	{
+		return capacite_;
+	}
+	int lireNElements()
+	{
+		return nElements_;
+	}
+	span<shared_ptr<Acteur>> lireElements() const
+	{
+		return span(elements_.get(), nElements_);
+	}
+	void detruireElements()
+	{
+		delete[] elements_.get();
+	}
+	//	span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements, liste.nElements); }
+
+private:
+	int capacite_ = 1;
+	int nElements_ = 0;
+	unique_ptr<shared_ptr<Acteur>[]> elements_; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
+
 };
 
 struct Film

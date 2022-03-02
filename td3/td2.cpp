@@ -2,7 +2,7 @@
 #pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
 
-#include "structures_solutionnaire_2.hpp"      // Structures de données pour la collection de films en mémoire.
+#include "structures.hpp"      // Structures de données pour la collection de films en mémoire.
 
 #include "bibliotheque_cours.hpp"
 #include "verification_allocation.hpp" // Nos fonctions pour le rapport de fuites de mémoire.
@@ -15,6 +15,7 @@
 #include "cppitertools/range.hpp"
 #include "gsl/span"
 #include "debogage_memoire.hpp"        // Ajout des numéros de ligne des "new" dans le rapport de fuites.  Doit être après les include du système, qui peuvent utiliser des "placement new" (non supporté par notre ajout de numéros de lignes).
+#include <memory>
 using namespace std;
 using namespace iter;
 using namespace gsl;
@@ -95,13 +96,13 @@ void ListeFilms::enleverFilm(const Film* film)
 //TODO: Une fonction pour trouver un Acteur par son nom dans une ListeFilms, qui retourne un pointeur vers l'acteur, ou nullptr si l'acteur n'est pas trouvé.  Devrait utiliser span.
 //[
 // Voir la NOTE ci-dessous pourquoi Acteur* n'est pas const.  Noter que c'est valide puisque c'est la struct uniquement qui est const dans le paramètre, et non ce qui est pointé par la struct.
-span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements, liste.nElements); }
+//span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements, liste.nElements); }
 
 //NOTE: Doit retourner un Acteur modifiable, sinon on ne peut pas l'utiliser pour modifier l'acteur tel que demandé dans le main, et on ne veut pas faire écrire deux versions.
-Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
+shared_ptr<Acteur> ListeFilms::trouverActeur(const string& nomActeur) const
 {
 	for (const Film* film : enSpan()) {
-		for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
+		for (shared_ptr<Acteur> acteur : film->acteurs.lireElements()) {
 			if (acteur->nom == nomActeur)
 				return acteur;
 		}
@@ -111,7 +112,7 @@ Acteur* ListeFilms::trouverActeur(const string& nomActeur) const
 //]
 
 //TODO: Compléter les fonctions pour lire le fichier et créer/allouer une ListeFilms.  La ListeFilms devra être passée entre les fonctions, pour vérifier l'existence d'un Acteur avant de l'allouer à nouveau (cherché par nom en utilisant la fonction ci-dessus).
-Acteur* lireActeur(istream& fichier//[
+shared_ptr<Acteur> lireActeur(istream& fichier//[
 , ListeFilms& listeFilms//]
 )
 {
@@ -120,7 +121,7 @@ Acteur* lireActeur(istream& fichier//[
 	acteur.anneeNaissance = lireUint16 (fichier);
 	acteur.sexe           = lireUint8  (fichier);
 	//[
-	Acteur* acteurExistant = listeFilms.trouverActeur(acteur.nom);
+	shared_ptr<Acteur> acteurExistant = listeFilms.trouverActeur(acteur.nom);
 	if (acteurExistant != nullptr)
 		return acteurExistant;
 	else {
@@ -140,17 +141,17 @@ Film* lireFilm(istream& fichier//[
 	film.realisateur = lireString(fichier);
 	film.anneeSortie = lireUint16 (fichier);
 	film.recette     = lireUint16 (fichier);
-	film.acteurs.nElements = lireUint8 (fichier);  //NOTE: Vous avez le droit d'allouer d'un coup le tableau pour les acteurs, sans faire de réallocation comme pour ListeFilms.  Vous pouvez aussi copier-coller les fonctions d'allocation de ListeFilms ci-dessus dans des nouvelles fonctions et faire un remplacement de Film par Acteur, pour réutiliser cette réallocation.
+	film.acteurs(lireUint8 (fichier), lireUint8(fichier));  //NOTE: Vous avez le droit d'allouer d'un coup le tableau pour les acteurs, sans faire de réallocation comme pour ListeFilms.  Vous pouvez aussi copier-coller les fonctions d'allocation de ListeFilms ci-dessus dans des nouvelles fonctions et faire un remplacement de Film par Acteur, pour réutiliser cette réallocation.
 	//[
 	Film* filmp = new Film(film); //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants sans qu'ils aient le "new" déjà écrit.
 	cout << "Création Film " << film.titre << endl;
-	filmp->acteurs.elements = new Acteur*[filmp->acteurs.nElements];
+	//filmp->acteurs.elements = new Acteur*[filmp->acteurs.nElements];
 	/*
 	//]
 	for (int i = 0; i < film.acteurs.nElements; i++) {
 		//[
 	*/
-	for (Acteur*& acteur : spanListeActeurs(filmp->acteurs)) {
+	for (shared_ptr<Acteur>& acteur : filmp->acteurs.lireElements()) {
 		acteur = 
 		//]
 		lireActeur(fichier//[
@@ -204,24 +205,24 @@ ListeFilms::ListeFilms(const string& nomFichier) : possedeLesFilms_(true)
 
 //TODO: Une fonction pour détruire un film (relâcher toute la mémoire associée à ce film, et les acteurs qui ne jouent plus dans aucun films de la collection).  Noter qu'il faut enleve le film détruit des films dans lesquels jouent les acteurs.  Pour fins de débogage, affichez les noms des acteurs lors de leur destruction.
 //[
-void detruireActeur(Acteur* acteur)
+void detruireActeur(shared_ptr<Acteur> acteur)
 {
 	cout << "Destruction Acteur " << acteur->nom << endl;
-	delete acteur;
+	delete &acteur;
 }
-bool joueEncore(const Acteur* acteur)
+bool joueEncore(const shared_ptr<Acteur> acteur)
 {
 	return acteur->joueDans.size() != 0;
 }
 void detruireFilm(Film* film)
 {
-	for (Acteur* acteur : spanListeActeurs(film->acteurs)) {
+	for (shared_ptr<Acteur> acteur : film->acteurs.lireElements()) {
 		acteur->joueDans.enleverFilm(film);
 		if (!joueEncore(acteur))
 			detruireActeur(acteur);
 	}
 	cout << "Destruction Film " << film->titre << endl;
-	delete[] film->acteurs.elements;
+	film->acteurs.detruireElements();
 	delete film;
 }
 //]
@@ -252,7 +253,7 @@ void afficherFilm(const Film& film)
 	cout << "  Recette: " << film.recette << "M$" << endl;
 
 	cout << "Acteurs:" << endl;
-	for (const Acteur* acteur : spanListeActeurs(film.acteurs))
+	for (const shared_ptr<Acteur> acteur : film.acteurs.lireElements())
 		afficherActeur(*acteur);
 }
 //]
@@ -286,7 +287,7 @@ void afficherListeFilms(const ListeFilms& listeFilms)
 void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomActeur)
 {
 	//TODO: Utiliser votre fonction pour trouver l'acteur (au lieu de le mettre à nullptr).
-	const Acteur* acteur = //[
+	const shared_ptr<Acteur> acteur = //[
 		listeFilms.trouverActeur(nomActeur);
 		/* //]
 		nullptr;
@@ -305,7 +306,7 @@ int main()
 	#endif
 	bibliotheque_cours::activerCouleursAnsi();  // Permet sous Windows les "ANSI escape code" pour changer de couleurs https://en.wikipedia.org/wiki/ANSI_escape_code ; les consoles Linux/Mac les supportent normalement par défaut.
 
-	int* fuite = new int; //TODO: Enlever cette ligne après avoir vérifié qu'il y a bien un "Detected memory leak" de "4 bytes" affiché dans la "Sortie", qui réfère à cette ligne du programme.
+//	int* fuite = new int; //TODO: Enlever cette ligne après avoir vérifié qu'il y a bien un "Detected memory leak" de "4 bytes" affiché dans la "Sortie", qui réfère à cette ligne du programme.
 
 	static const string ligneDeSeparation = "\n\033[35m════════════════════════════════════════\033[0m\n";
 
