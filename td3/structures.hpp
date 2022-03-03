@@ -18,7 +18,7 @@ public:
 	~ListeFilms();
 	void ajouterFilm(Film* film);
 	void enleverFilm(const Film* film);
-	shared_ptr<Acteur> trouverActeur(const std::string& nomActeur) const;
+	shared_ptr<Acteur> trouverActeur(const string& nomActeur) const;
 	span<Film*> enSpan() const;
 	int size() const { return nElements; }
 
@@ -36,6 +36,10 @@ public:
 	ListeActeurs(int capacite, int nElements):capacite_(capacite),nElements_(nElements)
 	{
 		elements_ = make_unique<shared_ptr<Acteur>[]>(capacite);
+	}
+	ListeActeurs operator=(const ListeActeurs& ancListe)
+	{
+		return ListeActeurs(ancListe.capacite_, ancListe.nElements_);
 	}
 	int lireCapacite()
 	{
@@ -59,7 +63,6 @@ private:
 	int capacite_ = 1;
 	int nElements_ = 0;
 	unique_ptr<shared_ptr<Acteur>[]> elements_; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
-
 };
 
 struct Film
@@ -67,10 +70,26 @@ struct Film
 	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
 	int anneeSortie, recette; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs;
+	//Film()
+	//{
+	//	titre = "";
+	//	realisateur = "";
+	//	anneeSortie = 0;
+	//	recette = 0;
+	//	acteurs = ListeActeurs();
+	//}
+	//Film(const Film& ancFilm)
+	//{
+	//	titre = ancFilm.titre;
+	//	realisateur = ancFilm.realisateur;
+	//	anneeSortie = ancFilm.anneeSortie;
+	//	recette = ancFilm.recette;
+	//	acteurs = ancFilm.acteurs;
+	//}
 };
 
 struct Acteur
 {
 	std::string nom; int anneeNaissance; char sexe;
-	ListeFilms joueDans;
+	//ListeFilms joueDans;
 };
