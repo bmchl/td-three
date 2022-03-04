@@ -244,22 +244,26 @@ ListeFilms::~ListeFilms()
 }
 //]
 
-void afficherActeur(const Acteur& acteur)
+string afficherActeur(const Acteur& acteur)
 {
-	cout << "  " << acteur.nom << ", " << acteur.anneeNaissance << " " << acteur.sexe << endl;
+	string texte = "";
+	texte = texte + "  " + acteur.nom + ", " + to_string(acteur.anneeNaissance) + " " + acteur.sexe + "\n";
+	return texte;
 }
 
 //TODO: Une fonction pour afficher un film avec tous ces acteurs (en utilisant la fonction afficherActeur ci-dessus).
 //[
-void afficherFilm(const Film& film)
+string afficherFilm(const Film& film)
 {
-	cout << "Titre: " << film.titre << endl;
-	cout << "  Réalisateur: " << film.realisateur << "  Année :" << film.anneeSortie << endl;
-	cout << "  Recette: " << film.recette << "M$" << endl;
+	string texte = "";
+	texte = texte + "Titre: " + film.titre + "\n";
+	texte = texte + "  Réalisateur: " + film.realisateur + "  Année :" + to_string(film.anneeSortie) + "\n";
+	texte = texte + "  Recette: " + to_string(film.recette) + "M$" + "\n";
 
-	cout << "Acteurs:" << endl;
+	texte = texte + "Acteurs:" + "\n";
 	for (const shared_ptr<Acteur> acteur : film.acteurs.lireElements())
-		afficherActeur(*acteur);
+		texte = texte + afficherActeur(*acteur);
+	return texte;
 }
 //]
 
