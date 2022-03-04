@@ -16,6 +16,7 @@
 #include "gsl/span"
 #include "debogage_memoire.hpp"        // Ajout des numéros de ligne des "new" dans le rapport de fuites.  Doit être après les include du système, qui peuvent utiliser des "placement new" (non supporté par notre ajout de numéros de lignes).
 #include <memory>
+#include <sstream>
 using namespace std;
 using namespace iter;
 using namespace gsl;
@@ -138,22 +139,22 @@ Film* lireFilm(istream& fichier//[
 , ListeFilms& listeFilms//]
 )
 {
-	Film* film = new Film();
-	film->titre       = lireString(fichier);
-	film->realisateur = lireString(fichier);
-	film->anneeSortie = lireUint16(fichier);
-	film->recette     = lireUint16(fichier);
-	film->acteurs = ListeActeurs(lireUint8(fichier), lireUint8(fichier));  //NOTE: Vous avez le droit d'allouer d'un coup le tableau pour les acteurs, sans faire de réallocation comme pour ListeFilms.  Vous pouvez aussi copier-coller les fonctions d'allocation de ListeFilms ci-dessus dans des nouvelles fonctions et faire un remplacement de Film par Acteur, pour réutiliser cette réallocation.
+	Film film = {};
+	film.titre       = lireString(fichier);
+	film.realisateur = lireString(fichier);
+	film.anneeSortie = lireUint16(fichier);
+	film.recette     = lireUint16(fichier);
+	film.acteurs = ListeActeurs(lireUint8(fichier), lireUint8(fichier));  //NOTE: Vous avez le droit d'allouer d'un coup le tableau pour les acteurs, sans faire de réallocation comme pour ListeFilms.  Vous pouvez aussi copier-coller les fonctions d'allocation de ListeFilms ci-dessus dans des nouvelles fonctions et faire un remplacement de Film par Acteur, pour réutiliser cette réallocation.
 	//[
-	 //NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants sans qu'ils aient le "new" déjà écrit.
-	cout << "Création Film " << film->titre << endl;
+	Film* filmp = new Film(film);//NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants sans qu'ils aient le "new" déjà écrit.
+	cout << "Création Film " << film.titre << endl;
 	//filmp->acteurs.elements = new Acteur*[filmp->acteurs.nElements];
 	/*
 	//]
 	for (int i = 0; i < film.acteurs.nElements; i++) {
 		//[
 	*/
-	for (shared_ptr<Acteur>& acteur : film->acteurs.lireElements()) {
+	for (shared_ptr<Acteur>& acteur : film.acteurs.lireElements()) {
 		acteur = 
 		//]
 		lireActeur(fichier//[
@@ -165,7 +166,7 @@ Film* lireFilm(istream& fichier//[
 	//]
 	}
 	//[
-	return film;
+	return filmp;
 	//]
 	return {}; //TODO: Retourner le pointeur vers le nouveau film.
 }
@@ -218,16 +219,16 @@ void detruireActeur(shared_ptr<Acteur> acteur)
 //}
 void detruireFilm(Film* film)
 {
-	for (shared_ptr<Acteur> acteur : film->acteurs.lireElements()) {
-		cout << "Le nombre d'utilisations du pointeur pour " << acteur->nom << " est de " << acteur.use_count() << endl;
+	for (shared_ptr<Acteur> acteur : film->acteurs_.lireElements()) {
+		cout << "Le nombre d'utilisations du pointeur pour " << acteur->nom_ << " est de " << acteur_.use_count() << endl;
 		if (acteur.use_count() == 0)
 		{
-			detruireActeur(acteur);
+			detruireActeur(acteur_);
 			cout << "Le pointeur pour cet acteur a ete detruit" << endl;
 		}
 	}
-	cout << "Destruction Film " << film->titre << endl;
-	film->acteurs.detruireElements();
+	cout << "Destruction Film " << film->titre_ << endl;
+	film->acteurs_.detruireElements();
 	delete film;
 }
 //]
@@ -253,17 +254,17 @@ string afficherActeur(const Acteur& acteur)
 
 //TODO: Une fonction pour afficher un film avec tous ces acteurs (en utilisant la fonction afficherActeur ci-dessus).
 //[
-string afficherFilm(const Film& film)
+ostream& operator<< (ostream& o, const Film& film) {
 {
 	string texte = "";
-	texte = texte + "Titre: " + film.titre + "\n";
-	texte = texte + "  Réalisateur: " + film.realisateur + "  Année :" + to_string(film.anneeSortie) + "\n";
-	texte = texte + "  Recette: " + to_string(film.recette) + "M$" + "\n";
+	texte = texte + "Titre: " + film.titre_ + "\n";
+	texte = texte + "  Réalisateur: " + film.realisateur_ + "  Année :" + to_string(film.anneeSortie_) + "\n";
+	texte = texte + "  Recette: " + to_string(film.recette_) + "M$" + "\n";
 
 	texte = texte + "Acteurs:" + "\n";
-	for (const shared_ptr<Acteur> acteur : film.acteurs.lireElements())
+	for (const shared_ptr<Acteur> acteur : film.acteurs_.lireElements())
 		texte = texte + afficherActeur(*acteur);
-	return texte;
+	return o << texte;
 }
 //]
 
@@ -287,7 +288,7 @@ void afficherListeFilms(const ListeFilms& listeFilms)
 		//]
 		//TODO: Afficher le film.
 		//[
-		afficherFilm(*film);
+		cout << afficherFilm(*film);
 		//]
 		cout << ligneDeSeparation;
 	}
@@ -324,10 +325,17 @@ int main()
 	//TODO: La ligne suivante devrait lire le fichier binaire en allouant la mémoire nécessaire.  Devrait afficher les noms de 20 acteurs sans doublons (par l'affichage pour fins de débogage dans votre fonction lireActeur).
 	ListeFilms listeFilms("films.bin");
 	
-	cout << ligneDeSeparation << "Le premier film de la liste est:" << endl;
+	cout << ligneDeSeparation << "Les deux premiers films de la liste sont:" << endl;
 	//TODO: Afficher le premier film de la liste.  Devrait être Alien.
 	//[
-	afficherFilm(*listeFilms.enSpan()[0]);
+	Film unFilm = *listeFilms.enSpan()[0];
+	Film unAutreFilm = *listeFilms.enSpan()[1];
+	cout << unFilm << unAutreFilm;
+
+	ostringstream tamponStringStream; tamponStringStream << unFilm;
+	string filmEnString = tamponStringStream.str();
+	ofstream fichier("unfilm.txt"); fichier << unFilm;
+
 	//]
 
 	cout << ligneDeSeparation << "Les films sont:" << endl;
@@ -342,18 +350,27 @@ int main()
 	listeFilms.trouverActeur("Benedict Cumberbatch")->anneeNaissance = 1976;
 	//]
 
-	cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
+	// cout << ligneDeSeparation << "Liste des films où Benedict Cumberbatch joue sont:" << endl;
 	//TODO: Afficher la liste des films où Benedict Cumberbatch joue.  Il devrait y avoir Le Hobbit et Le jeu de l'imitation.
 	//[
 	//afficherFilmographieActeur(listeFilms, "Benedict Cumberbatch");
 	//]
-	
+	Film skylien = *listeFilms[0];
+	// Changer le titre du film skylien pour "Skylien".
+	skylien.modifierTitre("Skylien");
+	// Changer le premier acteur du film skylien pour le premier acteur de listeFilms[1].
+	skylien.lireActeurs.lireElement[0] = *listeFilms[1].lireActeurs.lireElement[0];
+	// Changer le nom du premier acteur de skylien pour son nom complet "Daniel Wroughton Craig".
+	skylien.lireActeurs.lireElement[0].nom = "Daniel Wroughton Craig";
+	// Afficher skylien, listeFilms[0] et listeFilms[1], pour voir que Alien n’a pas été modifié, que skylien a bien l’acteur modifié et que listeFilms[1] a aussi l’acteur modifié puisque les films devraient partager le même acteur.
+	cout << "Voici le film Skylien: " << skylien << endl;
+	cout << "Voici le premier film de la liste (normalement Alien): " << *listeFilms[0] << endl;
+	cout << "Voici le deuxieme film de la liste (normalement Skyfall): " << *listeFilms[1] << endl;
 	//TODO: Détruire et enlever le premier film de la liste (Alien).  Ceci devrait "automatiquement" (par ce que font vos fonctions) détruire les acteurs Tom Skerritt et John Hurt, mais pas Sigourney Weaver puisqu'elle joue aussi dans Avatar.
 	//[
 	detruireFilm(listeFilms.enSpan()[0]);
 	listeFilms.enleverFilm(listeFilms.enSpan()[0]);
 	//]
-
 	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
 	//TODO: Afficher la liste des films.
 	//[

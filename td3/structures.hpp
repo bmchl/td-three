@@ -37,10 +37,18 @@ public:
 	{
 		elements_ = make_unique<shared_ptr<Acteur>[]>(capacite);
 	}
-	ListeActeurs operator=(const ListeActeurs& ancListe)
+	ListeActeurs(ListeActeurs const& ancListe)
 	{
-		return ListeActeurs(ancListe.capacite_, ancListe.nElements_);
+		assert(ancListe.elements_ == nullptr);
 	}
+	ListeActeurs operator=(ListeActeurs const& ancListe)
+	{
+		capacite_ = ancListe.capacite_;
+		nElements_ = ancListe.nElements_;
+		elements_ = move(ancListe.elements_);
+		return *this;
+	}
+
 	int lireCapacite()
 	{
 		return capacite_;
@@ -53,6 +61,11 @@ public:
 	{
 		return span(elements_.get(), nElements_);
 	}
+	Acteur lireElement(int index) const
+	{
+		return *elements_.get()[index]
+	}
+
 	void detruireElements()
 	{
 		delete[] elements_.get();
@@ -60,36 +73,43 @@ public:
 	//	span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements, liste.nElements); }
 
 private:
-	int capacite_ = 1;
+	int capacite_ = 0;
 	int nElements_ = 0;
 	unique_ptr<shared_ptr<Acteur>[]> elements_; // Pointeur vers un tableau de Acteur*, chaque Acteur* pointant vers un Acteur.
 };
 
-struct Film
+class Film
 {
-	std::string titre, realisateur; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
-	int anneeSortie, recette; // Année de sortie et recette globale du film en millions de dollars
-	ListeActeurs acteurs;
-	//Film()
-	//{
-	//	titre = "";
-	//	realisateur = "";
-	//	anneeSortie = 0;
-	//	recette = 0;
-	//	acteurs = ListeActeurs();
-	//}
-	//Film(const Film& ancFilm)
-	//{
-	//	titre = ancFilm.titre;
-	//	realisateur = ancFilm.realisateur;
-	//	anneeSortie = ancFilm.anneeSortie;
-	//	recette = ancFilm.recette;
-	//	acteurs = ancFilm.acteurs;
-	//}
+public:
+	Film() = default;
+	Film(const Film& ancFilm):
+		titre_(ancFilm.titre),
+		realisateur_(ancFilm.realisateur),
+		anneeSortie_(ancFilm.anneeSortie),
+		recette_(ancFilm.recette),
+		acteurs_(ancFilm.acteurs)
+	{
+	}
+	~Film()
+	{
+	}
+	friend ostream& operator<< (ostream& o, const Film& film);
+	void modifierTitre(string nouvTitre)
+	{
+		titre_ = nouvTitre;
+	}
+	ListeActeurs lireActeurs()
+	{
+		return acteurs_;
+	}
+private:
+	std::string titre_ = "", realisateu_r = ""; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
+	int anneeSortie_ = 0, recette_ = 0; // Année de sortie et recette globale du film en millions de dollars
+	ListeActeurs acteurs_;
 };
 
-struct Acteur
+class Acteur
 {
 	std::string nom; int anneeNaissance; char sexe;
-	//ListeFilms joueDans;
+	//ListeFilms joueDans;c
 };
