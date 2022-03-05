@@ -16,7 +16,6 @@
 #include "gsl/span"
 #include "debogage_memoire.hpp"        // Ajout des numéros de ligne des "new" dans le rapport de fuites.  Doit être après les include du système, qui peuvent utiliser des "placement new" (non supporté par notre ajout de numéros de lignes).
 #include <memory>
-#include <sstream>
 using namespace std;
 using namespace iter;
 using namespace gsl;
@@ -103,7 +102,7 @@ void ListeFilms::enleverFilm(const Film* film)
 shared_ptr<Acteur> ListeFilms::trouverActeur(const string& nomActeur) const
 {
 	for (const Film* film : enSpan()) {
-		for (shared_ptr<Acteur> acteur : film->acteurs.lireElements()) {
+		for (shared_ptr<Acteur> acteur : film->acteurs.enSpan()) {
 			if (acteur->nom == nomActeur)
 				return acteur;
 		}
@@ -126,7 +125,7 @@ shared_ptr<Acteur> lireActeur(istream& fichier//[
 	if (acteurExistant != nullptr)
 		return acteurExistant;
 	else {
-		cout << "Création Acteur " << acteur.nom << endl;
+		std::cout << "Création Acteur " << acteur.nom << endl;
 		Acteur* nouvActeur_p = new Acteur(acteur);
 		shared_ptr<Acteur> nouvActeur_s(nouvActeur_p);
 		return nouvActeur_s;
@@ -140,21 +139,21 @@ Film* lireFilm(istream& fichier//[
 )
 {
 	Film film = {};
-	film.titre       = lireString(fichier);
+	film.titre = lireString(fichier);
 	film.realisateur = lireString(fichier);
 	film.anneeSortie = lireUint16(fichier);
-	film.recette     = lireUint16(fichier);
+	film.recette = lireUint16(fichier);
 	film.acteurs = ListeActeurs(lireUint8(fichier), lireUint8(fichier));  //NOTE: Vous avez le droit d'allouer d'un coup le tableau pour les acteurs, sans faire de réallocation comme pour ListeFilms.  Vous pouvez aussi copier-coller les fonctions d'allocation de ListeFilms ci-dessus dans des nouvelles fonctions et faire un remplacement de Film par Acteur, pour réutiliser cette réallocation.
 	//[
 	Film* filmp = new Film(film);//NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants sans qu'ils aient le "new" déjà écrit.
-	cout << "Création Film " << film.titre << endl;
+	std::cout << "Création Film " << film.titre << endl;
 	//filmp->acteurs.elements = new Acteur*[filmp->acteurs.nElements];
 	/*
 	//]
 	for (int i = 0; i < film.acteurs.nElements; i++) {
 		//[
 	*/
-	for (shared_ptr<Acteur>& acteur : film.acteurs.lireElements()) {
+	for (shared_ptr<Acteur>& acteur : film.acteurs.enSpan()) {
 		acteur = 
 		//]
 		lireActeur(fichier//[
@@ -210,7 +209,7 @@ ListeFilms::ListeFilms(const string& nomFichier) : possedeLesFilms_(true)
 //[
 void detruireActeur(shared_ptr<Acteur> acteur)
 {
-	cout << "Destruction Acteur " << acteur->nom << endl;
+	std::cout << "Destruction Acteur " << acteur->nom << endl;
 	delete &acteur;
 }
 //bool joueEncore(const shared_ptr<Acteur> acteur)
@@ -219,16 +218,16 @@ void detruireActeur(shared_ptr<Acteur> acteur)
 //}
 void detruireFilm(Film* film)
 {
-	for (shared_ptr<Acteur> acteur : film->acteurs_.lireElements()) {
-		cout << "Le nombre d'utilisations du pointeur pour " << acteur->nom_ << " est de " << acteur_.use_count() << endl;
+	for (shared_ptr<Acteur> acteur : film->acteurs.enSpan()) {
+		std::cout << "Le nombre d'utilisations du pointeur pour " << acteur->nom << " est de " << acteur.use_count() << endl;
 		if (acteur.use_count() == 0)
 		{
-			detruireActeur(acteur_);
-			cout << "Le pointeur pour cet acteur a ete detruit" << endl;
+			detruireActeur(acteur);
+			std::cout << "Le pointeur pour cet acteur a ete detruit" << endl;
 		}
 	}
-	cout << "Destruction Film " << film->titre_ << endl;
-	film->acteurs_.detruireElements();
+	std::cout << "Destruction Film " << film->titre << endl;
+	film->acteurs.detruireElements();
 	delete film;
 }
 //]
@@ -254,45 +253,48 @@ string afficherActeur(const Acteur& acteur)
 
 //TODO: Une fonction pour afficher un film avec tous ces acteurs (en utilisant la fonction afficherActeur ci-dessus).
 //[
-ostream& operator<< (ostream& o, const Film& film) {
-{
-	string texte = "";
-	texte = texte + "Titre: " + film.titre_ + "\n";
-	texte = texte + "  Réalisateur: " + film.realisateur_ + "  Année :" + to_string(film.anneeSortie_) + "\n";
-	texte = texte + "  Recette: " + to_string(film.recette_) + "M$" + "\n";
+ostream& operator<<(ostream& o, const Film &film)
+	{
+		string texte = "";
+		texte = texte + "Titre: " + film.titre + "\n";
+		texte = texte + "  Réalisateur: " + film.realisateur + "  Année :" + to_string(film.anneeSortie) + "\n";
+		texte = texte + "  Recette: " + to_string(film.recette) + "M$" + "\n";
 
-	texte = texte + "Acteurs:" + "\n";
-	for (const shared_ptr<Acteur> acteur : film.acteurs_.lireElements())
-		texte = texte + afficherActeur(*acteur);
-	return o << texte;
-}
+		texte = texte + "Acteurs:" + "\n";
+		for (const shared_ptr<Acteur> acteur : film.acteurs.enSpan())
+		{
+			texte = texte + afficherActeur(*acteur);
+		}
+		return o << texte;
+	}
 //]
 
-void afficherListeFilms(const ListeFilms& listeFilms)
-{
-	//TODO: Utiliser des caractères Unicode pour définir la ligne de séparation (différente des autres lignes de séparations dans ce progamme).
-	static const string ligneDeSeparation = //[
-		"\033[32m────────────────────────────────────────\033[0m\n";
+	void afficherListeFilms(const ListeFilms & listeFilms)
+	{
+		//TODO: Utiliser des caractères Unicode pour définir la ligne de séparation (différente des autres lignes de séparations dans ce progamme).
+		static const string ligneDeSeparation = //[
+			"\033[32m────────────────────────────────────────\033[0m\n";
 		/*
 		//]
 		{};
 	//[ */
 	//]
-	cout << ligneDeSeparation;
-	//TODO: Changer le for pour utiliser un span.
-	//[
-	/*//]
-	for (int i = 0; i < listeFilms.nElements; i++) {
-		//[*/
-	for (const Film* film : listeFilms.enSpan()) {
-		//]
-		//TODO: Afficher le film.
-		//[
-		cout << afficherFilm(*film);
-		//]
 		cout << ligneDeSeparation;
+		//TODO: Changer le for pour utiliser un span.
+		//[
+		/*//]
+		for (int i = 0; i < listeFilms.nElements; i++) {
+			//[*/
+		for (const Film* film : listeFilms.enSpan())
+		{
+			//]
+			//TODO: Afficher le film.
+			//[
+			cout << *film;
+			//]
+			cout << ligneDeSeparation;
+		}
 	}
-}
 
 //void afficherFilmographieActeur(const ListeFilms& listeFilms, const string& nomActeur)
 //{
@@ -332,9 +334,9 @@ int main()
 	Film unAutreFilm = *listeFilms.enSpan()[1];
 	cout << unFilm << unAutreFilm;
 
-	ostringstream tamponStringStream; tamponStringStream << unFilm;
-	string filmEnString = tamponStringStream.str();
-	ofstream fichier("unfilm.txt"); fichier << unFilm;
+	//ostringstream tamponStringStream; tamponStringStream << unFilm;
+	//string filmEnString = tamponStringStream.str();
+	//ofstream fichier("unfilm.txt"); fichier << unFilm;
 
 	//]
 
@@ -357,21 +359,21 @@ int main()
 	//]
 	Film skylien = *listeFilms[0];
 	// Changer le titre du film skylien pour "Skylien".
-	skylien.modifierTitre("Skylien");
+	skylien.titre = "Skylien";
 	// Changer le premier acteur du film skylien pour le premier acteur de listeFilms[1].
-	skylien.lireActeurs.lireElement[0] = *listeFilms[1].lireActeurs.lireElement[0];
+	skylien.acteurs[0] = listeFilms[1]->acteurs[0];
 	// Changer le nom du premier acteur de skylien pour son nom complet "Daniel Wroughton Craig".
-	skylien.lireActeurs.lireElement[0].nom = "Daniel Wroughton Craig";
+	skylien.acteurs[0]->nom = "Daniel Wroughton Craig";
 	// Afficher skylien, listeFilms[0] et listeFilms[1], pour voir que Alien n’a pas été modifié, que skylien a bien l’acteur modifié et que listeFilms[1] a aussi l’acteur modifié puisque les films devraient partager le même acteur.
-	cout << "Voici le film Skylien: " << skylien << endl;
-	cout << "Voici le premier film de la liste (normalement Alien): " << *listeFilms[0] << endl;
-	cout << "Voici le deuxieme film de la liste (normalement Skyfall): " << *listeFilms[1] << endl;
+	std::cout << "Voici le film Skylien: " << skylien << endl;
+	std::cout << "Voici le premier film de la liste (normalement Alien): " << *listeFilms[0] << endl;
+	std::cout << "Voici le deuxieme film de la liste (normalement Skyfall): " << *listeFilms[1] << endl;
 	//TODO: Détruire et enlever le premier film de la liste (Alien).  Ceci devrait "automatiquement" (par ce que font vos fonctions) détruire les acteurs Tom Skerritt et John Hurt, mais pas Sigourney Weaver puisqu'elle joue aussi dans Avatar.
 	//[
 	detruireFilm(listeFilms.enSpan()[0]);
 	listeFilms.enleverFilm(listeFilms.enSpan()[0]);
 	//]
-	cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
+	std::cout << ligneDeSeparation << "Les films sont maintenant:" << endl;
 	//TODO: Afficher la liste des films.
 	//[
 	afficherListeFilms(listeFilms);
