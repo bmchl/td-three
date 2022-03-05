@@ -16,8 +16,8 @@ public:
 	ListeFilms(const std::string& nomFichier);
 	ListeFilms(const ListeFilms& l) { assert(l.elements == nullptr); }; // Pas demandé dans l'énoncé, mais on veut s'assurer qu'on ne fait jamais de copie de liste, car la copie par défaut ne fait pas ce qu'on veut.  Donc on ne permet pas de copier une liste non vide (la copie de liste vide est utilisée dans la création d'un acteur).
 	~ListeFilms();
-	void ajouterFilm(Film *film);
-	void enleverFilm(const Film *film);
+	void ajouterFilm(Film* film);
+	void enleverFilm(const Film* film);
 	shared_ptr<Acteur> trouverActeur(const string& nomActeur) const;
 	span<Film*> enSpan() const;
 	int size() const { return nElements; }
@@ -45,7 +45,7 @@ public:
 	{
 		assert(ancListe.elements_ == nullptr);
 	}
-	ListeActeurs operator=(ListeActeurs& ancListe)
+	ListeActeurs operator=(ListeActeurs ancListe)
 	{
 		capacite_ = ancListe.capacite_;
 		nElements_ = ancListe.nElements_;
@@ -70,16 +70,17 @@ public:
 	}*/
 	span<shared_ptr<Acteur>> enSpan() const
 	{
-		return span(elements_.get(), nElements_);
+		auto elements_s = make_shared<unique_ptr<shared_ptr<Acteur>[]>>(capacite_);
+		return span(elements_s.get(), nElements_);
 	}
 	shared_ptr<Acteur> operator[](int index)
 	{
 		return elements_.get()[index];
 	}
-	void detruireElements()
-	{
-		delete[] elements_.get();
-	}
+//	void detruireElements()
+//	{
+//		delete[] elements_.get();
+//	}
 	//	span<Acteur*> spanListeActeurs(const ListeActeurs& liste) { return span(liste.elements, liste.nElements); }
 
 private:
@@ -90,15 +91,15 @@ private:
 
 struct Film
 {
-	Film() = default;
-	Film(const Film& ancFilm):
-		titre(ancFilm.titre),
-		realisateur(ancFilm.realisateur),
-		anneeSortie(ancFilm.anneeSortie),
-		recette(ancFilm.recette),
-		acteurs(ancFilm.acteurs)
-	{
-	}
+	//Film() = default;
+	//Film(const Film& ancFilm):
+	//	titre(ancFilm.titre),
+	//	realisateur(ancFilm.realisateur),
+	//	anneeSortie(ancFilm.anneeSortie),
+	//	recette(ancFilm.recette),
+	//	acteurs(ancFilm.acteurs)
+	//{
+	//}
 	// friend ostream& operator<<(ostream& o, const Film& film);
 	/*void modifierTitre(string nouvTitre)
 	{

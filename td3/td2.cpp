@@ -1,4 +1,4 @@
-﻿//*** Solutionnaire version 2, sans les //[ //] au bon endroit car le code est assez différent du code fourni.
+//*** Solutionnaire version 2, sans les //[ //] au bon endroit car le code est assez différent du code fourni.
 #pragma region "Includes"//{
 #define _CRT_SECURE_NO_WARNINGS // On permet d'utiliser les fonctions de copies de chaînes qui sont considérées non sécuritaires.
 
@@ -12,10 +12,10 @@
 #include <string>
 #include <limits>
 #include <algorithm>
+#include <memory>
 #include "cppitertools/range.hpp"
 #include "gsl/span"
 #include "debogage_memoire.hpp"        // Ajout des numéros de ligne des "new" dans le rapport de fuites.  Doit être après les include du système, qui peuvent utiliser des "placement new" (non supporté par notre ajout de numéros de lignes).
-#include <memory>
 using namespace std;
 using namespace iter;
 using namespace gsl;
@@ -126,9 +126,9 @@ shared_ptr<Acteur> lireActeur(istream& fichier//[
 		return acteurExistant;
 	else {
 		std::cout << "Création Acteur " << acteur.nom << endl;
-		Acteur* nouvActeur_p = new Acteur(acteur);
-		shared_ptr<Acteur> nouvActeur_s(nouvActeur_p);
-		return nouvActeur_s;
+//		Acteur* nouvActeur_p = new Acteur(acteur);
+//		shared_ptr<Acteur> nouvActeur_s(nouvActeur_p);
+		return make_shared<Acteur>(move(acteur));;
 	}
 	//]
 	return {}; //TODO: Retourner un pointeur soit vers un acteur existant ou un nouvel acteur ayant les bonnes informations, selon si l'acteur existait déjà.  Pour fins de débogage, affichez les noms des acteurs crées; vous ne devriez pas voir le même nom d'acteur affiché deux fois pour la création.
@@ -138,14 +138,15 @@ Film* lireFilm(istream& fichier//[
 , ListeFilms& listeFilms//]
 )
 {
-	Film film = {};
-	film.titre = lireString(fichier);
-	film.realisateur = lireString(fichier);
-	film.anneeSortie = lireUint16(fichier);
-	film.recette = lireUint16(fichier);
-	film.acteurs = ListeActeurs(lireUint8(fichier), lireUint8(fichier));  //NOTE: Vous avez le droit d'allouer d'un coup le tableau pour les acteurs, sans faire de réallocation comme pour ListeFilms.  Vous pouvez aussi copier-coller les fonctions d'allocation de ListeFilms ci-dessus dans des nouvelles fonctions et faire un remplacement de Film par Acteur, pour réutiliser cette réallocation.
+	Film* film = new Film;
+	film->titre       = lireString(fichier);
+	film->realisateur = lireString(fichier);
+	film->anneeSortie = lireUint16 (fichier);
+	film->recette     = lireUint16 (fichier);
+	auto nActeurs = lireUint8 (fichier);
+	film->acteurs = ListeActeurs(nActeurs, nActeurs);
+	//NOTE: Vous avez le droit d'allouer d'un coup le tableau pour les acteurs, sans faire de réallocation comme pour ListeFilms.  Vous pouvez aussi copier-coller les fonctions d'allocation de ListeFilms ci-dessus dans des nouvelles fonctions et faire un remplacement de Film par Acteur, pour réutiliser cette réallocation.
 	//[
-	Film* filmp = new Film(film);//NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants sans qu'ils aient le "new" déjà écrit.
 	std::cout << "Création Film " << film.titre << endl;
 	//filmp->acteurs.elements = new Acteur*[filmp->acteurs.nElements];
 	/*
@@ -153,7 +154,7 @@ Film* lireFilm(istream& fichier//[
 	for (int i = 0; i < film.acteurs.nElements; i++) {
 		//[
 	*/
-	for (shared_ptr<Acteur>& acteur : film.acteurs.enSpan()) {
+	for (shared_ptr<Acteur>& acteur : film->acteurs.enSpan()) {
 		acteur = 
 		//]
 		lireActeur(fichier//[
@@ -165,7 +166,8 @@ Film* lireFilm(istream& fichier//[
 	//]
 	}
 	//[
-	return filmp;
+	//Film* filmp = new Film(film);//NOTE: On aurait normalement fait le "new" au début de la fonction pour directement mettre les informations au bon endroit; on le fait ici pour que le code ci-dessus puisse être directement donné aux étudiants sans qu'ils aient le "new" déjà écrit.
+	return film;
 	//]
 	return {}; //TODO: Retourner le pointeur vers le nouveau film.
 }
@@ -207,11 +209,11 @@ ListeFilms::ListeFilms(const string& nomFichier) : possedeLesFilms_(true)
 
 //TODO: Une fonction pour détruire un film (relâcher toute la mémoire associée à ce film, et les acteurs qui ne jouent plus dans aucun films de la collection).  Noter qu'il faut enleve le film détruit des films dans lesquels jouent les acteurs.  Pour fins de débogage, affichez les noms des acteurs lors de leur destruction.
 //[
-void detruireActeur(shared_ptr<Acteur> acteur)
-{
-	std::cout << "Destruction Acteur " << acteur->nom << endl;
-	delete &acteur;
-}
+//void detruireActeur(shared_ptr<Acteur> acteur)
+//{
+//	std::cout << "Destruction Acteur " << acteur->nom << endl;
+//	delete &acteur;
+//}
 //bool joueEncore(const shared_ptr<Acteur> acteur)
 //{
 //	return acteur->joueDans.size() != 0;
@@ -220,14 +222,14 @@ void detruireFilm(Film* film)
 {
 	for (shared_ptr<Acteur> acteur : film->acteurs.enSpan()) {
 		std::cout << "Le nombre d'utilisations du pointeur pour " << acteur->nom << " est de " << acteur.use_count() << endl;
-		if (acteur.use_count() == 0)
-		{
-			detruireActeur(acteur);
-			std::cout << "Le pointeur pour cet acteur a ete detruit" << endl;
-		}
+//		if (acteur.use_count() == 0)
+//		{
+//			detruireActeur(acteur);
+//			std::cout << "Le pointeur pour cet acteur a ete detruit" << endl;
+//		}
 	}
 	std::cout << "Destruction Film " << film->titre << endl;
-	film->acteurs.detruireElements();
+	//film->acteurs.detruireElements();
 	delete film;
 }
 //]
@@ -325,6 +327,7 @@ int main()
 	//TODO: Chaque TODO dans cette fonction devrait se faire en 1 ou 2 lignes, en appelant les fonctions écrites.
 
 	//TODO: La ligne suivante devrait lire le fichier binaire en allouant la mémoire nécessaire.  Devrait afficher les noms de 20 acteurs sans doublons (par l'affichage pour fins de débogage dans votre fonction lireActeur).
+	cout << "well" << endl;
 	ListeFilms listeFilms("films.bin");
 	
 	cout << ligneDeSeparation << "Les deux premiers films de la liste sont:" << endl;

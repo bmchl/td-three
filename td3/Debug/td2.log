@@ -1,7 +1,7 @@
 ﻿  td2.cpp
 Z:\GitHub\td-three\td3\structures.hpp(19,19): error C2061: syntax error: identifier 'Film'
-Z:\GitHub\td-three\td3\structures.hpp(20,30): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
-Z:\GitHub\td-three\td3\structures.hpp(20,30): error C2143: syntax error: missing ',' before '*'
+Z:\GitHub\td-three\td3\structures.hpp(20,29): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+Z:\GitHub\td-three\td3\structures.hpp(20,29): error C2143: syntax error: missing ',' before '*'
 Z:\GitHub\td-three\td3\structures.hpp(21,13): error C2065: 'Acteur': undeclared identifier
 Z:\GitHub\td-three\td3\structures.hpp(21,2): error C2923: 'std::shared_ptr': 'Acteur' is not a valid template type argument for parameter '_Ty'
 Z:\GitHub\td-three\td3\structures.hpp(21): message : see declaration of 'Acteur'
@@ -21,21 +21,21 @@ Z:\GitHub\td-three\td3\structures.hpp(71,18): error C2065: 'Acteur': undeclared 
 Z:\GitHub\td-three\td3\structures.hpp(71,7): error C2923: 'std::shared_ptr': 'Acteur' is not a valid template type argument for parameter '_Ty'
 Z:\GitHub\td-three\td3\structures.hpp(71): message : see declaration of 'Acteur'
 Z:\GitHub\td-three\td3\structures.hpp(71,7): error C3203: 'shared_ptr': unspecialized class template can't be used as a template argument for template parameter 'ElementType', expected a real type
-Z:\GitHub\td-three\td3\structures.hpp(75,13): error C2065: 'Acteur': undeclared identifier
-Z:\GitHub\td-three\td3\structures.hpp(75,2): error C2923: 'std::shared_ptr': 'Acteur' is not a valid template type argument for parameter '_Ty'
-Z:\GitHub\td-three\td3\structures.hpp(75): message : see declaration of 'Acteur'
-Z:\GitHub\td-three\td3\structures.hpp(76,2): error C2955: 'std::shared_ptr': use of class template requires template argument list
+Z:\GitHub\td-three\td3\structures.hpp(76,13): error C2065: 'Acteur': undeclared identifier
+Z:\GitHub\td-three\td3\structures.hpp(76,2): error C2923: 'std::shared_ptr': 'Acteur' is not a valid template type argument for parameter '_Ty'
+Z:\GitHub\td-three\td3\structures.hpp(76): message : see declaration of 'Acteur'
+Z:\GitHub\td-three\td3\structures.hpp(77,2): error C2955: 'std::shared_ptr': use of class template requires template argument list
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(1504): message : see declaration of 'std::shared_ptr'
-Z:\GitHub\td-three\td3\structures.hpp(88,24): error C2065: 'Acteur': undeclared identifier
-Z:\GitHub\td-three\td3\structures.hpp(88,13): error C2923: 'std::shared_ptr': 'Acteur' is not a valid template type argument for parameter '_Ty'
-Z:\GitHub\td-three\td3\structures.hpp(88): message : see declaration of 'Acteur'
-Z:\GitHub\td-three\td3\structures.hpp(88,33): error C2955: 'std::shared_ptr': use of class template requires template argument list
+Z:\GitHub\td-three\td3\structures.hpp(89,24): error C2065: 'Acteur': undeclared identifier
+Z:\GitHub\td-three\td3\structures.hpp(89,13): error C2923: 'std::shared_ptr': 'Acteur' is not a valid template type argument for parameter '_Ty'
+Z:\GitHub\td-three\td3\structures.hpp(89): message : see declaration of 'Acteur'
+Z:\GitHub\td-three\td3\structures.hpp(89,33): error C2955: 'std::shared_ptr': use of class template requires template argument list
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(1504): message : see declaration of 'std::shared_ptr'
-Z:\GitHub\td-three\td3\structures.hpp(88,13): error C2955: 'std::shared_ptr': use of class template requires template argument list
+Z:\GitHub\td-three\td3\structures.hpp(89,13): error C2955: 'std::shared_ptr': use of class template requires template argument list
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(1504): message : see declaration of 'std::shared_ptr'
-Z:\GitHub\td-three\td3\structures.hpp(88,2): error C2976: 'std::unique_ptr': too few template arguments
+Z:\GitHub\td-three\td3\structures.hpp(89,2): error C2976: 'std::unique_ptr': too few template arguments
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(3155): message : see declaration of 'std::unique_ptr'
-Z:\GitHub\td-three\td3\structures.hpp(88,35): error C2955: 'std::unique_ptr': use of class template requires template argument list
+Z:\GitHub\td-three\td3\structures.hpp(89,35): error C2955: 'std::unique_ptr': use of class template requires template argument list
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(3155): message : see declaration of 'std::unique_ptr'
 Z:\GitHub\td-three\td3\structures.hpp(39,14): error C2512: 'std::unique_ptr': no appropriate default constructor available
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(3155,1): message : see declaration of 'std::unique_ptr'
@@ -56,54 +56,50 @@ Z:\GitHub\td-three\td3\structures.hpp(52,1): error C2893: Failed to specialize f
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\type_traits(1455): message : see declaration of 'std::move'
 Z:\GitHub\td-three\td3\structures.hpp(52,1): message : With the following template arguments:
 Z:\GitHub\td-three\td3\structures.hpp(52,1): message : '_Ty=std::unique_ptr &'
-Z:\GitHub\td-three\td3\structures.hpp(73,14): error C2641: cannot deduce template arguments for 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(Type (&)[Extent])': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(735): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(std::array<_Ty,_Size> &)': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(738): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<const Type,Size> gsl::span(const std::array<_Ty,_Size> &)': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(741): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<Element,4294967295> gsl::span(Container &)': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(745): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<Element,4294967295> gsl::span(const Container &)': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(749): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(gsl::span<ElementType,Extent>::KnownNotNull,gsl::span<ElementType,Extent>::size_type) noexcept': could not deduce template argument for 'gsl::span<ElementType,Extent>::KnownNotNull' from '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type'
-Z:\GitHub\td-three\td3\include\gsl\span(700): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(gsl::span<ElementType,Extent>::KnownNotNull,gsl::span<ElementType,Extent>::size_type) noexcept': could not deduce template argument for 'gsl::span<ElementType,Extent>::KnownNotNull' from '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type'
-Z:\GitHub\td-three\td3\include\gsl\span(700): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(const gsl::span<OtherElementType,OtherExtent> &) noexcept': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(534): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(const gsl::span<OtherElementType,OtherExtent> &) noexcept': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(525): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(const gsl::span<ElementType,Extent> &) noexcept': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(518): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(const Container &) noexcept': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(515): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(const Container &) noexcept': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(503): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(Container &) noexcept': expects 1 arguments - 2 provided
-Z:\GitHub\td-three\td3\include\gsl\span(491): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(Container &) noexcept': expects 1 arguments - 2 provided
+Z:\GitHub\td-three\td3\structures.hpp(73,55): error C2065: 'Acteur': undeclared identifier
+Z:\GitHub\td-three\td3\structures.hpp(73,44): error C2923: 'std::shared_ptr': 'Acteur' is not a valid template type argument for parameter '_Ty'
+Z:\GitHub\td-three\td3\structures.hpp(73): message : see declaration of 'Acteur'
+Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(1504): message : see declaration of 'std::shared_ptr'
+Z:\GitHub\td-three\td3\structures.hpp(73,44): error C2955: 'std::shared_ptr': use of class template requires template argument list
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(1504): message : see declaration of 'std::shared_ptr'
+Z:\GitHub\td-three\td3\structures.hpp(73,33): error C2976: 'std::unique_ptr': too few template arguments
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(3155): message : see declaration of 'std::unique_ptr'
+Z:\GitHub\td-three\td3\structures.hpp(73,21): error C2672: 'std::make_shared': no matching overloaded function found
+Z:\GitHub\td-three\td3\structures.hpp(73,1): error C3206: 'std::make_shared': invalid template argument for '_Ty', missing template argument list on class template 'std::unique_ptr'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(2804): message : see declaration of 'std::make_shared'
+Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'enable_if<std::is_bounded_array_v<_Ty0>,std::shared_ptr<_Ty>>::type std::make_shared(void)': expects 0 arguments - 1 provided
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(2795): message : see declaration of 'std::make_shared'
+Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'enable_if<std::is_unbounded_array_v<_Ty>,std::shared_ptr<_Ty>>::type std::make_shared(const size_t,const remove_extent<_Ty>::type &)': expects 2 arguments - 1 provided
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Tools\MSVC\14.29.30133\include\memory(2789): message : see declaration of 'std::make_shared'
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C3536: 'elements_s': cannot be used before it is initialized
+Z:\GitHub\td-three\td3\structures.hpp(74,14): error C2641: cannot deduce template arguments for 'gsl::span'
+Z:\GitHub\td-three\td3\structures.hpp(74,14): error C2783: 'gsl::span<ElementType,Extent> gsl::span(Container &) noexcept': could not deduce template argument for 'ElementType'
 Z:\GitHub\td-three\td3\include\gsl\span(480): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(const std::array<T,N> &) noexcept': expects 1 arguments - 2 provided
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(const std::array<T,N> &) noexcept': could not deduce template argument for 'const std::array<T,N> &' from 'const int'
 Z:\GitHub\td-three\td3\include\gsl\span(466): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(std::array<T,N> &) noexcept': expects 1 arguments - 2 provided
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(const std::array<T,N> &) noexcept': could not deduce template argument for 'const std::array<T,N> &' from 'const int'
+Z:\GitHub\td-three\td3\include\gsl\span(466): message : see declaration of 'gsl::span'
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(std::array<T,N> &) noexcept': could not deduce template argument for 'std::array<T,N> &' from 'const int'
 Z:\GitHub\td-three\td3\include\gsl\span(457): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(ElementType (&)[N]) noexcept': expects 1 arguments - 2 provided
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(std::array<T,N> &) noexcept': could not deduce template argument for 'std::array<T,N> &' from 'const int'
+Z:\GitHub\td-three\td3\include\gsl\span(457): message : see declaration of 'gsl::span'
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(ElementType (&)[N]) noexcept': could not deduce template argument for 'ElementType (&)[N]' from 'const int'
 Z:\GitHub\td-three\td3\include\gsl\span(448): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(ElementType *,ElementType *) noexcept': could not deduce template argument for 'ElementType *' from '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type'
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(ElementType *,ElementType *) noexcept': expects 2 arguments - 1 provided
 Z:\GitHub\td-three\td3\include\gsl\span(442): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(ElementType *,ElementType *) noexcept': could not deduce template argument for 'ElementType *' from '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type'
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(ElementType *,ElementType *) noexcept': expects 2 arguments - 1 provided
 Z:\GitHub\td-three\td3\include\gsl\span(435): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(ElementType *,gsl::span<ElementType,Extent>::size_type) noexcept': could not deduce template argument for 'ElementType *' from '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type'
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(ElementType *,gsl::span<ElementType,Extent>::size_type) noexcept': expects 2 arguments - 1 provided
 Z:\GitHub\td-three\td3\include\gsl\span(431): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(ElementType *,gsl::span<ElementType,Extent>::size_type) noexcept': could not deduce template argument for 'ElementType *' from '_Get_deleter_pointer_type<_Ty,remove_reference<_Ty2>::type,void>::type'
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(ElementType *,gsl::span<ElementType,Extent>::size_type) noexcept': expects 2 arguments - 1 provided
 Z:\GitHub\td-three\td3\include\gsl\span(425): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(void) noexcept': expects 0 arguments - 2 provided
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(void) noexcept': expects 0 arguments - 1 provided
 Z:\GitHub\td-three\td3\include\gsl\span(421): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(73,1): error C2780: 'gsl::span<ElementType,Extent> gsl::span(gsl::span<ElementType,Extent>)': expects 1 arguments - 2 provided
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(gsl::span<ElementType,Extent>)': could not deduce template argument for 'gsl::span<ElementType,Extent>' from 'const int'
 Z:\GitHub\td-three\td3\include\gsl\span(393): message : see declaration of 'gsl::span'
-Z:\GitHub\td-three\td3\structures.hpp(81,1): error C2541: 'delete': cannot delete objects that are not pointers
+Z:\GitHub\td-three\td3\structures.hpp(74,1): error C2784: 'gsl::span<ElementType,Extent> gsl::span(gsl::span<ElementType,Extent>)': could not deduce template argument for 'gsl::span<ElementType,Extent>' from 'const int'
+Z:\GitHub\td-three\td3\include\gsl\span(393): message : see declaration of 'gsl::span'
 Z:\GitHub\td-three\td3\td2.cpp(58,6): error C2065: 'elements': undeclared identifier
 Z:\GitHub\td-three\td3\td2.cpp(61,23): error C2065: 'elements': undeclared identifier
 Z:\GitHub\td-three\td3\td2.cpp(62,12): error C2065: 'elements': undeclared identifier
@@ -153,4 +149,5 @@ Z:\GitHub\td-three\td3\td2.cpp(104,26): error C2065: 'enSpan': undeclared identi
 Z:\GitHub\td-three\td3\td2.cpp(104,32): error C3317: 'enSpan': an overload function cannot be used as the expression in a range-based for statement
 Z:\GitHub\td-three\td3\td2.cpp(104,24): error C2143: syntax error: missing ';' before ':'
 Z:\GitHub\td-three\td3\td2.cpp(104,34): error C2143: syntax error: missing ';' before ')'
-Z:\GitHub\td-three\td3\td2.cpp(104,2): fatal error C1003: error count exceeds 100; stopping compilation
+Z:\GitHub\td-three\td3\td2.cpp(105,58): error C2440: 'initializing': cannot convert from 'int' to 'std::shared_ptr<Acteur>'
+Z:\GitHub\td-three\td3\td2.cpp(105,58): fatal error C1003: error count exceeds 100; stopping compilation
