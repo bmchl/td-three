@@ -84,7 +84,7 @@ public:
 	Film() = default;
 	Film(const Film& ancFilm):
 		titre_(ancFilm.titre_),
-		realisateur_(ancFilm.realisateur),
+		realisateur_(ancFilm.realisateur_),
 		anneeSortie_(ancFilm.anneeSortie_),
 		recette_(ancFilm.recette_),
 		acteurs_(ancFilm.acteurs_)
@@ -103,13 +103,14 @@ public:
 		return acteurs_;
 	}
 private:
-	std::string titre_ = "", realisateu_r = ""; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
+	std::string titre_ = "", realisateur_ = ""; // Titre et nom du réalisateur (on suppose qu'il n'y a qu'un réalisateur).
 	int anneeSortie_ = 0, recette_ = 0; // Année de sortie et recette globale du film en millions de dollars
 	ListeActeurs acteurs_;
 };
 
 class Acteur
 {
+public:
 	std::string nom; int anneeNaissance; char sexe;
 	//ListeFilms joueDans;c
 };
